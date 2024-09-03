@@ -1,0 +1,19 @@
+{
+    "manifest_version": 3,
+    "name": "Fly Live Logs Local Time",
+    "description": "Show local time instead of UTC",
+    "version": "1.0",
+    "permissions": ["activeTab"],
+    "action": {
+      "default_icon": "fly.png"
+    },
+    "content_scripts": [
+        {
+          "js": ["scripts/content.js"],
+          "run_at": "document_start",
+          "matches": [
+            "https://fly.io/apps/*/monitoring*"
+          ]
+        }
+      ]
+  }
