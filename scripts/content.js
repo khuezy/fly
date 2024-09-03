@@ -1,37 +1,35 @@
+// This is very shitty code, hacked to inject the time formatter onto the Live Logs dashboard (https://fly.io/apps/<some-app>/monitoring)
+// The dashboard uses some weird websocket event listener that attaches globally and rerenders the entire page and not the child components... hence the hackery
 const LS_KEY = 'fly_local_time'
 
 
 async function waitForSelector(selector, interval = 100, maxAttempts = 50) {
     return new Promise((resolve, reject) => {
-        let attempts = 0;
+        let attempts = 0
 
         const checkSelector = setInterval(() => {
             const element = document.querySelector(selector);
             if (element) {
-                clearInterval(checkSelector); // Stop checking once the element is found
-                return resolve(element); // Execute the callback with the found element
+                clearInterval(checkSelector)
+                return resolve(element)
             } else if (attempts >= maxAttempts) {
-                clearInterval(checkSelector); // Stop checking after max attempts
-                return reject(`Element with selector "${selector}" not found after ${maxAttempts * interval}ms`);
+                clearInterval(checkSelector)
+                return reject(`Element with selector "${selector}" not found after ${maxAttempts * interval}ms`)
             }
-    
-            attempts++;
-        }, interval);
+            attempts++
+        }, interval)
     })
 }
 
 async function addTimeSelector() {
     const OPTIONS = ['utc', 'local', 'machine']
 
-    const targetElement = await  waitForSelector('form header div:nth-child(2) > div');
+    const targetElement = await  waitForSelector('form header div:nth-child(2) > div')
     if (targetElement) {
+        if (document.getElementById('yolo')) return
 
-        if (document.getElementById('yolo')) {
-            return
-        }
-
-        const dropDown = document.createElement('div');
-        dropDown.className = 'relative flex-grow focus-within:z-10'; // Correctly set the class
+        const dropDown = document.createElement('div')
+        dropDown.className = 'relative flex-grow focus-within:z-10'
         const select = document.createElement('select')
         select.id='yolo'
         select.className = targetElement.querySelector('select').className
@@ -41,11 +39,9 @@ async function addTimeSelector() {
             option.textContent = item
             option.value = item
             option.selected = pref === item
-
             select.appendChild(option)
         })
         select.onchange = e => {
-            console.log(e.target.value)
             localStorage.setItem(LS_KEY, e.target.value)
         }
 
@@ -65,7 +61,7 @@ window.onload = () => {
     });
 
     const console = document.getElementById('console')
-    observer.observe(console, { childList: true, subtree: true });
+    observer.observe(console, { childList: true, subtree: true })
 }
 
 function updateTimes() {
@@ -132,8 +128,6 @@ function updateTimes() {
                 break
             default:
         }
-
-        
     })
 }
 
